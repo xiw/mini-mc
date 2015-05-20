@@ -1,0 +1,18 @@
+This directory contains a "minimal" implementation to demonstrate
+the basic ideas of symbolic execution and concolic execution, using
+Z3's Python interface.  You should read the KLEE and the SAGE papers
+listed on the CSE 551 webiste.
+
+* Install Z3/Python first: https://github.com/Z3Prover/z3
+
+* Symbolic execution: run test_me.py; see sched_fork() in mc.py.
+
+* Concolic execution: comment out the "test_me(x, y)" line and
+  uncomment out the next "mc_fuzz(...)" line, and run test_me.py
+  again; see mc_fuzz() and sched_flip() in mc.py.
+
+* Try more example: bad.py.
+
+* Try equivalence checking examples: ffs_eqv.py and mod_eqv.py.
+
+Thanks to James Bornholt for the feedback.

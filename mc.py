@@ -15,11 +15,11 @@ def sched_fork(self):
   pid = os.fork()
   if pid:
     solver.add(self)
-    r = 1
+    r = True
     mc_log("assume (%s)" % (str(self),))
   else:
     solver.add(Not(self))
-    r = 0
+    r = False
     mc_log("assume ¬(%s)" % (str(self),))
   if solver.check() != sat:
     mc_log("unreachable")
@@ -48,7 +48,7 @@ def sched_flip(self, trace):
 
 def mc_fuzz(f, init_keys, init_vals, cnt = 0):
   mc_log("=" * 60)
-  mc_log("#%s: %s" % (cnt, zip(init_keys, init_vals)))
+  mc_log("#%s: %s" % (cnt, list(zip(init_keys, init_vals))))
 
   trace = []
   setattr(BoolRef, "__bool__", lambda self: sched_flip(self, trace))
@@ -62,7 +62,8 @@ def mc_fuzz(f, init_keys, init_vals, cnt = 0):
   try:
     f()
   except:
-    sys.excepthook(sys.exc_type, sys.exc_value, sys.exc_traceback)
+    typ, value, tb = sys.exc_info()
+    sys.excepthook(typ, value, tb)
   solver.pop()
   # this path done
   solver.add(Not(And(*trace)))

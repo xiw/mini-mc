@@ -25,7 +25,7 @@ def mc_assert(b):
   r = solver.check()
   solver.pop()
   if r == sat:
-    raise(solver.model())
+    raise Exception(solver.model())
 
 def mc_unsignedBitVec():
   conf = {
@@ -68,6 +68,6 @@ def mc_exit():
       os.waitpid(0, 0)
   except:
     pass
-#  mc_log("exit")
+  mc_log("exit")
 
 atexit.register(mc_exit)

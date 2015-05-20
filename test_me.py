@@ -1,7 +1,5 @@
 #!/usr/bin/env python
 
-#!/usr/bin/env python
-
 # Copyright (c) 2015 Xi Wang
 #
 # This file is part of the UW CSE 551 lecture code.  It is freely

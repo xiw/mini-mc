@@ -5,14 +5,17 @@ listed on the CSE 551 webiste.
 
 * Install Z3/Python first: https://github.com/Z3Prover/z3
 
-* Symbolic execution: run test_me.py; see sched_fork() in mc.py.
+* Symbolic execution: run test_me.py.
 
-* Concolic execution: comment out the "test_me(x, y)" line and
-  uncomment out the next "mc_fuzz(...)" line, and run test_me.py
-  again; see mc_fuzz() and sched_flip() in mc.py.
+* Check the implementation: sched_fork() in mc.py.
 
-* Try more example: bad.py.
+* Concolic execution: comment out the "test_me(x, y)" line,
+  uncomment the next "mc_fuzz(...)" line, and run test_me.py.
 
-* Try equivalence checking examples: ffs_eqv.py and mod_eqv.py.
+* Check the implementation: mc_fuzz() and sched_flip() in mc.py.
+
+* Try one more example: run bad.py.
+
+* Run equivalence checking examples: ffs_eqv.py and mod_eqv.py.
 
 Thanks to James Bornholt for the feedback.

@@ -27,6 +27,12 @@ def mc_assert(b):
   if r == sat:
     raise Exception(solver.model())
 
+def mc_model_repr(self):
+  decls = sorted(self.decls(), key=str)
+  return ", ".join(["%s = %s" % (k, self[k]) for k in decls])
+
+setattr(ModelRef, "__repr__", mc_model_repr)
+
 def mc_unsignedBitVec():
   conf = {
     "__div__"    : UDiv,
@@ -43,7 +49,7 @@ def mc_unsignedBitVec():
   for k, v in conf.iteritems():
     setattr(BitVecRef, k, v)
 
-def hlexcepthook(typ, value, tb):
+def mc_excepthook(typ, value, tb):
   import traceback
   from pygments import highlight
   from pygments.lexers import get_lexer_by_name
@@ -57,7 +63,7 @@ def hlexcepthook(typ, value, tb):
 if sys.stderr.isatty():
   try:
     import pygments
-    sys.excepthook = hlexcepthook
+    sys.excepthook = mc_excepthook
   except:
     pass
 

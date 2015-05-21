@@ -6,7 +6,7 @@
 # distributed under the MIT License.
 
 # ---------------------------------------------------------------
-# klee
+# symbolic
 # ---------------------------------------------------------------
 
 from mc_util import *
@@ -27,10 +27,10 @@ def sched_fork(self):
   return r
 
 setattr(BoolRef, "__bool__", sched_fork)
-setattr(BoolRef, "__nonzero__", sched_fork)
+setattr(BoolRef, "__nonzero__", getattr(BoolRef, "__bool__"))
 
 # ---------------------------------------------------------------
-# sage
+# concolic
 # ---------------------------------------------------------------
 
 def sched_flip(self, trace):
@@ -49,15 +49,14 @@ def sched_flip(self, trace):
 def mc_fuzz(f, init_keys, init_vals, cnt = 0):
   mc_log("=" * 60)
   mc_log("#%s: %s" % (cnt, ', '.join(["%s = %s" % (k, v) for k, v in zip(init_keys, init_vals)])))
+  assert len(init_keys) == len(init_vals)
 
   trace = []
   setattr(BoolRef, "__bool__", lambda self: sched_flip(self, trace))
   setattr(BoolRef, "__nonzero__", getattr(BoolRef, "__bool__"))
 
   solver.push()
-  assert len(init_keys) == len(init_vals)
-  for i, k in enumerate(init_keys):
-    v = init_vals[i]
+  for k, v in zip(init_keys, init_vals):
     solver.add(k == v)
   try:
     f()
@@ -65,11 +64,13 @@ def mc_fuzz(f, init_keys, init_vals, cnt = 0):
     typ, value, tb = sys.exc_info()
     sys.excepthook(typ, value, tb)
   solver.pop()
-  # this path done
-  solver.add(Not(And(*trace)))
 
   delattr(BoolRef, "__bool__")
   delattr(BoolRef, "__nonzero__")
+
+  # this path done
+  if trace:
+    solver.add(Not(And(*trace)))
 
   # choose a new path
   while trace:
@@ -79,10 +80,9 @@ def mc_fuzz(f, init_keys, init_vals, cnt = 0):
     solver.add(*trace)
     r = solver.check()
     solver.pop()
-    if r != sat:
-      continue
-    m = solver.model()
-    new_init_vals = [m.eval(k, model_completion=True) for k in init_keys]
-    cnt = mc_fuzz(f, init_keys, new_init_vals, cnt + 1)
+    if r == sat:
+      m = solver.model()
+      new_init_vals = [m.eval(k, model_completion=True) for k in init_keys]
+      cnt = mc_fuzz(f, init_keys, new_init_vals, cnt + 1)
 
   return cnt

@@ -46,7 +46,7 @@ def mc_unsignedBitVec():
     "__gt__"     : UGT,
     "__ge__"     : UGE
   }
-  for k, v in conf.iteritems():
+  for k, v in conf.items():
     setattr(BitVecRef, k, v)
 
 def mc_excepthook(typ, value, tb):

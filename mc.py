@@ -62,7 +62,7 @@ def mc_fuzz(f, init_keys, init_vals, cnt = 0):
     f()
   except:
     typ, value, tb = sys.exc_info()
-    sys.excepthook(typ, value, tb)
+    sys.excepthook(typ, value, tb.tb_next)
   solver.pop()
 
   delattr(BoolRef, "__bool__")

@@ -19,14 +19,6 @@ def mc_log(s):
 def mc_assume(b):
   return solver.add(b)
 
-def mc_assert(b):
-  solver.push()
-  solver.add(Not(b))
-  r = solver.check()
-  solver.pop()
-  if r == sat:
-    raise Exception(solver.model())
-
 def mc_model_repr(self):
   decls = sorted(self.decls(), key=str)
   return ", ".join(["%s = %s" % (k, self[k]) for k in decls])
@@ -51,21 +43,25 @@ def mc_unsignedBitVec():
 
 def mc_excepthook(typ, value, tb):
   import traceback
-  from pygments import highlight
-  from pygments.lexers import get_lexer_by_name
-  from pygments.formatters import get_formatter_by_name
-
-  code = ''.join(traceback.format_exception(typ, value, tb))
-  lexer = get_lexer_by_name("pytb", stripall=True)
-  formatter = get_formatter_by_name("terminal256")
-  mc_log(highlight(code, lexer, formatter))
-
-if sys.stderr.isatty():
+  msg = ''.join(traceback.format_exception(typ, value, tb)).strip()
+  # print input/model
+  if solver.check() == sat:
+    msg = "%s: %s" % (msg, solver.model())
+  # highlight if pygments installed
   try:
-    import pygments
-    sys.excepthook = mc_excepthook
+    from pygments import highlight
+    from pygments.lexers import get_lexer_by_name
+    from pygments.formatters import get_formatter_by_name
+
+    lexer = get_lexer_by_name("pytb", stripall=True)
+    formatter = get_formatter_by_name("terminal256")
+    msg = highlight(msg, lexer, formatter).strip()
   except:
     pass
+  mc_log(msg)
+
+if sys.stderr.isatty():
+  sys.excepthook = mc_excepthook
 
 def mc_exit():
   # wait until all child processes done

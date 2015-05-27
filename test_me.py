@@ -15,7 +15,7 @@ def test_me(x, y):
   z = 2 * x
   if z == y:
     if y == x + 10:
-      mc_assert(False)
+      assert False
 
 x = BitVec("x", 32)
 y = BitVec("y", 32)

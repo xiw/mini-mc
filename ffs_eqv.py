@@ -40,4 +40,4 @@ def ffs_uclibc(i):
   return 0
 
 x = BitVec("x", 32)
-mc_assert(ffs_newlib(x) == ffs_uclibc(x))
+assert ffs_newlib(x) == ffs_uclibc(x)

@@ -47,9 +47,9 @@ def sched_flip(self, trace):
   return r
 
 def mc_fuzz(f, init_keys, init_vals, cnt = 0):
+  assert len(init_keys) == len(init_vals)
   mc_log("=" * 60)
   mc_log("#%s: %s" % (cnt, ', '.join(["%s = %s" % (k, v) for k, v in zip(init_keys, init_vals)])))
-  assert len(init_keys) == len(init_vals)
 
   trace = []
   setattr(BoolRef, "__bool__", lambda self: sched_flip(self, trace))

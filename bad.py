@@ -23,7 +23,7 @@ def top(s):
   if s[3] == ord('!'):
     cnt = cnt + 1
   if cnt >= 3:
-    mc_assert(False)
+    assert False
 
 n = 4
 names = " ".join(["s[%s]" % (i,) for i in range(n)])

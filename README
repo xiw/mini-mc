@@ -5,6 +5,8 @@ listed on the CSE 551 webiste.
 
 * Install Z3/Python first: https://github.com/Z3Prover/z3
 
+* (optional) Install Pygments: pip install Pygments
+
 * Symbolic execution: run test_me.py.
 
 * Check the implementation: sched_fork() in mc.py.
